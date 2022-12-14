@@ -1,0 +1,5 @@
+// 这是persondtd.dtd文件中的内容,已经提前写好
+        <!ELEMENT persons (person)>
+        <!ELEMENT person (name,age)>
+        <!ELEMENT name (#PCDATA)>
+        <!ELEMENT age (#PCDATA)>

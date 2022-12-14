@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+    <body>
+        <form action="#" method="post">
+            <input type="hidden" name="id" value="123">
+
+            <label for="username">用户名：</label>
+            <input type="text" name="username" id="username"><br>
+
+            <label for="password">密码：</label>
+            <input type="password" name="password" id="password"><br>
+
+            性别：
+            <input type="radio" name="gender" value="1" id="male"> <label for="male">男</label>
+            <input type="radio" name="gender" value="2" id="female"> <label for="female">女</label>
+            <br>
+
+            爱好：
+            <input type="checkbox" name="hobby" value="1"> 旅游
+            <input type="checkbox" name="hobby" value="2"> 电影
+            <input type="checkbox" name="hobby" value="3"> 游戏
+            <br>
+
+            头像：
+            <input type="file"><br>
+
+            城市:
+            <select name="city">
+                <option>北京</option>
+                <option value="shanghai">上海</option>
+                <option>广州</option>
+            </select>
+            <br>
+
+            个人描述：
+            <textarea cols="20" rows="5" name="desc"></textarea>
+            <br>
+            <br>
+            <input type="submit" value="免费注册">
+            <input type="reset" value="重置">
+            <input type="button" value="一个按钮">
+        </form>
+
+        <script>
+            document.write("hello js 2~");//写入html页面
+        </script>
+
+        <script>
+            {
+                var str4 = '  abc   ';
+                const PI = 3.14;
+                var age = 20;
+                var age = 30;//JavaScript 会用 30 将之前 age 变量的 20 替换掉
+            }
+            window.alert(age); //打印的结果是 30
+            alert(1 + str4.trim() + 1);
+        </script>
+
+    </body>
+</html>
+
+<script src="demo.js"></script>

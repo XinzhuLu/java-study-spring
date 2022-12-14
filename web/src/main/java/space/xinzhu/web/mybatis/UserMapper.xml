@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    mapper标签：表示SQL语句映射关系
+    namespace="com.itheima.mapper.UserMapper ：名称空间，用于区分每个映射配置文件，和mapper接口的全类名一致。
+-->
+<mapper namespace="space.xinzhu.web.mybatis.UserMapper">
+
+    <resultMap id="UserResultMap" type="space.xinzhu.web.mybatis.User">
+        <!--
+               id：完成主键字段的映射
+                   column：表的列名
+                   property：实体类的属性名
+               result：完成一般字段的映射
+                   column：表的列名
+                   property：实体类的属性名
+           -->
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+    </resultMap>
+    <!--查询所有用户信息
+    id="selectAll" :SQL的唯一标识，需要和mapper接口中的方法名一样
+    resultType="com.itheima.pojo.User" ：查询的每一行数据要封装的对象类型-->
+    <select id="selectAll" resultType="space.xinzhu.web.mybatis.User">
+        select * from tb_user
+    </select>
+
+    <!-- 根据id查询用户信息
+    User selectById(int id);
+    parameterType="int" :表示参数类型，如果是对象类型就需要些全类名或者别名，可以省略不写 -->
+    <select id="selectById" resultType="space.xinzhu.web.mybatis.User" parameterType="int">
+        select * from tb_user where id=#{id}
+    </select>
+
+
+    <!--添加用户信息 void add(User user);-->
+    <insert id="add" parameterType="space.xinzhu.web.mybatis.User">
+        insert into tb_user values(null,#{username},#{password},#{gender},#{addr})
+    </insert>
+
+    <!--修改用户信息 void update(User user);-->
+    <update id="update">
+        update tb_user set username=#{username},password=#{password},gender=#{gender},addr=#{addr} where id=#{id}
+    </update>
+
+    <!--根据id删除用户信息 void deleteById(int id);-->
+    <delete id="deleteById">
+        delete from tb_user where id=#{id}
+    </delete>
+
+
+    <!--useGeneratedKeys：是够获取自动增长的主键值。true表示获取-->
+    <!--keyProperty  ：指定将获取到的主键值封装到哪儿个属性里-->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_brand (brand_name, company_name, ordered, description, status)
+        values (#{brandName}, #{companyName}, #{ordered}, #{description}, #{status});
+    </insert>
+
+    <!--动态sql-->
+    <select id="selectByCondition" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        where status = #{status}
+          and company_name like concat('%',#{companyName},'%')
+          and brand_name like concat('%',#{brandName},'%')
+    </select>
+
+    <!--if标签，这种SQL语句就会根据传递的参数值进行动态的拼接-->
+    <select id="selectByCondition" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        where
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="companyName != null and companyName != '' ">
+            and company_name like concat('%',#{companyName},'%')
+        </if>
+        <if test="brandName != null and brandName != '' ">
+            and brand_name like  concat('%',#{brandName},'%')
+        </if>
+    </select>
+
+    <!--where标签，会动态的去掉第一个条件前的 and，如果所有的参数没有值则不加where关键字-->
+    <select id="selectByCondition" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="companyName != null and companyName != '' ">
+                and company_name like concat('%',#{companyName},'%')
+            </if>
+            <if test="brandName != null and brandName != '' ">
+                and brand_name like  concat('%',#{brandName},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--choose标签-->
+    <select id="selectByConditionSingle" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        <where>
+            <choose><!--相当于switch-->
+                <when test="status != null"><!--相当于case-->
+                    status = #{status}
+                </when>
+                <when test="companyName != null and companyName != '' "><!--相当于case-->
+                    company_name like concat('%',#{companyName},'%')
+                </when>
+                <when test="brandName != null and brandName != ''"><!--相当于case-->
+                    brand_name like concat('%',#{brandName},'%')
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!--set标签可以用于动态包含需要更新的列，忽略其它不更新的列。-->
+    <update id="updatePart">
+        update tb_brand
+        <set>
+            <if test="brandName != null and brandName != ''">
+                brand_name = #{brandName},
+            </if>
+            <if test="companyName != null and companyName != ''">
+                company_name = #{companyName},
+            </if>
+            <if test="ordered != null">
+                ordered = #{ordered},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+    <!--foreach标签
+    * collection 属性：
+  * mybatis会将数组参数，封装为一个Map集合。
+    * 默认：array = 数组
+    * 使用@Param注解改变map集合的默认key的名称
+* item 属性：本次迭代获取到的元素。
+* separator 属性：集合项迭代之间的分隔符。`foreach` 标签不会错误地添加多余的分隔符。也就是最后一次迭代不会加分隔符。
+* open 属性：该属性值是在拼接SQL语句之前拼接的语句，只会拼接一次
+* close 属性：该属性值是在拼接SQL语句拼接后拼接的语句，只会拼接一次
+-->
+
+    <delete id="deleteByIds">
+        delete from tb_brand where id in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

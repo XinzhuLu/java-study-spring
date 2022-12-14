@@ -1,0 +1,41 @@
+server:
+  port: 9997
+
+#app:
+#  host: localhost
+#  url: http://${app.host}:${server.port}
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db1?useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    # 过时了initialization-mode: always
+  application:
+    name: spring
+  sql:
+    init:
+      mode: always #根据resources目录下的sql文件初始化
+      encoding: UTF-8
+
+#mybatis相关配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true #开启mybatis驼峰命名自动隐式
+  mapper-locations: space/xinzhu/spring/mapper/*Mapper.xml #加载resources目录下所有Mapper结尾的xml文件
+  config-location: mybatis-config.xml #加载resources目录中mybatis核心配置文件【扩展】
+  type-aliases-package: space.xinzhu.spring.pojo #给包中的所有javabean取别名【扩展】
+
+#配置默認值
+user:
+  id: 1
+  username: admin
+  password: admin
+
+#配置日志信息
+logging:
+  level:
+    root: info
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+
